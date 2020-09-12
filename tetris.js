@@ -1,3 +1,40 @@
+function Shapes() {
+    this.A = [[1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+    this.B = [[1, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 0, 0, 0]];
+    this.C = [[1, 1, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0]];
+    this.D = [[0, 1, 0, 0], [1, 1, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0]];
+    this.E = [[1, 0, 0, 0], [1, 1, 0, 0], [0, 1, 0, 0], [0, 0, 0, 0]];
+    this.F = [[1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+    this.G = [[1, 0, 0, 0], [1, 1, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0]];
+
+    this.rndInt = function(max) {
+        return Math.floor(Math.random() * (max + 1));
+    };
+
+    // rotate shape 90 degrees right (clockwise)
+    this.rotateShape90 = function(shape) {
+        var rotated = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+        for (var i = 0; i < 4; i++) {
+            for (var j = 0; j < 4; j++) {
+                rotated[j][3-i] = shape[i][j];
+            }
+        }
+        return rotated;
+    };
+
+    this.rotateShape = function(shape, count) {
+        for (var k = 0; k < count; k++) {
+            shape = this.rotateShape90(shape);
+        }
+        return shape;
+    }
+
+    this.getRandomShape = function() {
+        var shapes = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+        return this.rotateShape(this[shapes[this.rndInt(6)]], this.rndInt(3));
+    };
+}
+
 function addClass(id, name) {
     var element = document.getElementById(id);
     var arr = element.className.split(' ');
@@ -30,6 +67,14 @@ function getJ(id) {
 function iterBoard(fcn) {
     for (var i = 0; i < ROWS; i++) {
         for (var j = 0; j < COLS; j++) {
+            fcn(i, j);
+        }
+    }
+}
+
+function iterChoice(fcn) {
+    for (var i = 0; i < 4; i++) {
+        for (var j = 0; j < 4; j++) {
             fcn(i, j);
         }
     }
@@ -101,5 +146,12 @@ function checkFullness() {
 }
 
 function nextMove() {
-    addClass(formatChoiceId(0, 0, 0), 'selected');
+    shape = shapes.getRandomShape();
+    iterChoice(function(i, j) {
+        if (shape[i][j]) {
+            addClass(formatChoiceId(i, j, 0), 'selected');
+        } else {
+            clearClasses(formatChoiceId(i, j, 0));
+        }
+    });
 }
