@@ -35,17 +35,27 @@ function Shapes() {
     };
 }
 
-function addClass(id, name) {
-    var element = document.getElementById(id);
-    var arr = element.className.split(' ');
-    if (arr.indexOf(name) == -1) {
-        element.className += ' ' + name;
+function BoardUI() {
+    this.addClass = function(id, name) {
+        var element = document.getElementById(id);
+        var arr = element.className.split(' ');
+        if (arr.indexOf(name) == -1) {
+            element.className += ' ' + name;
+        }
     }
-}
 
-function clearClasses(id) {
-    var element = document.getElementById(id);
-    element.className = 'field';
+    this.clearClasses = function(id) {
+        var element = document.getElementById(id);
+        element.className = 'field';
+    }
+
+    this.toggleClass = function(condition, elmId, className) {
+        if (condition) {
+            this.addClass(elmId, className);
+        } else {
+            this.clearClasses(elmId);
+        }
+    }
 }
 
 function formatId(i, j) {
@@ -81,13 +91,7 @@ function iterChoice(fcn) {
 }
 
 function updateGame() {
-  iterBoard(function(i, j) {
-    if (board[i][j]) {
-        addClass(formatId(i, j), 'selected');
-    } else {
-        clearClasses(formatId(i, j));
-    }
-  });
+    iterBoard(function(i, j) { boardUI.toggleClass(board[i][j], formatId(i, j), 'selected'); });
 }
 
 function resetGame() {
@@ -101,11 +105,7 @@ function clickField(obj) {
     var i = getI(obj.id);
     var j = getJ(obj.id);
     board[i][j] = !board[i][j];
-    if (board[i][j]) {
-        addClass(obj.id, 'selected');
-    } else {
-        clearClasses(obj.id);
-    }
+    boardUI.toggleClass(board[i][j], obj.id, 'selected');   // possibly replace with updateGame()
     checkFullness();
 }
 
@@ -127,6 +127,15 @@ function finishRow(row) {
     updateGame();
 }
 
+function eraseTopRows() {
+    for (var i = 0; i < ERASED_ROWS; i++) {
+        for (var j = 0; j < COLS; j++) {
+            board[i][j] = false;
+        }
+    }
+    updateGame();
+}
+
 function isRowFull(row) {
     isFull = true;
     for (var j = 0; j < COLS; j++) {
@@ -137,21 +146,11 @@ function isRowFull(row) {
 
 function checkFullness() {
     for (var i = 0; i < ROWS; i++) {
-        if (isRowFull(i)) {
-            clearClasses('finishRow_'+i);
-        } else {
-            addClass('finishRow_'+i, 'hidden');
-        }
+        boardUI.toggleClass(!isRowFull(i), 'finishRow_' + i, 'hidden');
     }
 }
 
 function nextMove() {
     shape = shapes.getRandomShape();
-    iterChoice(function(i, j) {
-        if (shape[i][j]) {
-            addClass(formatChoiceId(i, j, 0), 'selected');
-        } else {
-            clearClasses(formatChoiceId(i, j, 0));
-        }
-    });
+    iterChoice(function(i, j) { boardUI.toggleClass(shape[i][j], formatChoiceId(i, j, 0), 'selected'); });
 }

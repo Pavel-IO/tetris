@@ -10,6 +10,7 @@
 <script>
     ROWS = 10;
     COLS = 10;
+    ERASED_ROWS = 2;  // rows count erased with fill some column
 
     function printChoiceTable(option) {
         var optionName = option == 0 ? 'A' : 'B';
@@ -45,6 +46,7 @@
     }
 
     board = [];
+    boardUI = new BoardUI();
     shapes = new Shapes();
 
     printChoiceTable(0);
@@ -55,7 +57,7 @@
 <br><br>
 <button onclick="nextMove()">Další tah</button>
  | <button onclick="resetGame()">Dokončit kolo</button>
- | <button>Vymazat horní dva</button> | Skóre: 8
+ | <button onclick="eraseTopRows()">Vymazat horní dva</button> | Skóre: 8
 
 <script>
 
