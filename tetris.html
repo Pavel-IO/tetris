@@ -23,7 +23,8 @@
             }
             output += '</tr>';
         }
-        output += '<tr><th colspan="4"><button>Vybrat</button></th></tr>';
+        output += '<tr><th colspan="4"><button onclick="selectedOption('+option+')" id="option'+option+'">'
+          + 'Vybrat</button></th></tr>';
         output += '<tr><th colspan="4">&nbsp;</th></tr>';
         output += '</table>';
         document.write(output);
@@ -36,11 +37,16 @@
             output += '<tr>';
             for (var j = 0; j < COLS; j++) {
                 board[i].push(false);
-                output += '<td class="field" id="' + formatId(i, j) + '" onclick="clickField(this)"></td>';
+                output += '<td class="field" id="' + formatId(i, j) + '" onclick="boardUI.clickField(this)"></td>';
             }
             output += '<td><button id="finishRow_'+i+'" class="hidden" onclick="finishRow('+i+')">Ok</button></td>'
             output += '</tr>';
         }
+        output += '<tr>';
+        for (var j = 0; j < COLS; j++) {
+          output += '<th>' + String.fromCharCode(65 + j) + '</th>';
+        }
+        output += '</tr>';
         output += '</table>';
         document.write(output);
     }
@@ -48,16 +54,23 @@
     board = [];
     boardUI = new BoardUI();
     shapes = new Shapes();
+    activeChoice = null;
+    choices = [
+      [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+      [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+    ];
 
     printChoiceTable(0);
     printChoiceTable(1);
     printMainTable();
+
+    initGame();
 </script>
 
 <br><br>
-<button onclick="nextMove()">Další tah</button>
- | <button onclick="resetGame()">Dokončit kolo</button>
- | <button onclick="eraseTopRows()">Vymazat horní dva</button> | Skóre: 8
+<button id="confirmRound" onclick="confirmRound()" disabled="disabled">Potvrdit tah</button>
+<br><br>
+<button onclick="resetGame()">Dokončit kolo</button>
 
 <script>
 
@@ -70,11 +83,20 @@
     .field.selected {
         background-color: greenyellow!important;
     }
+    .field.active {
+        background-color: red!important;
+    }
     td.field {
         background-color: gray; width: 50px; height: 50px;
     }
     .hidden {
         display: none;
+    }
+    #confirmRound {
+      width: 500px;
+    }
+    #option0, #option1 {
+      width: 200px;
     }
 </style>
 

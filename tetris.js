@@ -36,6 +36,18 @@ function Shapes() {
 }
 
 function BoardUI() {
+    this.locked = true;
+
+    this.unlock = function() {
+        this.locked = false;
+        document.getElementById('confirmRound').disabled = false;
+    }
+
+    this.lock = function() {
+        this.locked = true;
+        document.getElementById('confirmRound').disabled = true;
+    }
+
     this.addClass = function(id, name) {
         var element = document.getElementById(id);
         var arr = element.className.split(' ');
@@ -51,10 +63,26 @@ function BoardUI() {
 
     this.toggleClass = function(condition, elmId, className) {
         if (condition) {
+            this.clearClasses(elmId);
             this.addClass(elmId, className);
         } else {
             this.clearClasses(elmId);
         }
+    }
+
+    this.updateGame = function() {
+        iterBoard(function(i, j) { boardUI.toggleClass(board[i][j], formatId(i, j), 'selected'); });
+    }
+
+    this.clickField = function(obj) {
+        if (this.locked) {
+            return ;
+        }
+        var i = getI(obj.id);
+        var j = getJ(obj.id);
+        board[i][j] = !board[i][j];
+        boardUI.toggleClass(board[i][j], obj.id, 'active');   // possibly replace with updateGame()
+        checkFullness();
     }
 }
 
@@ -90,23 +118,11 @@ function iterChoice(fcn) {
     }
 }
 
-function updateGame() {
-    iterBoard(function(i, j) { boardUI.toggleClass(board[i][j], formatId(i, j), 'selected'); });
-}
-
 function resetGame() {
     if (confirm('Opravdu resetovat celou hru?')) {
         iterBoard(function(i, j) { board[i][j] = false; });
     }
-    updateGame();
-}
-
-function clickField(obj) {
-    var i = getI(obj.id);
-    var j = getJ(obj.id);
-    board[i][j] = !board[i][j];
-    boardUI.toggleClass(board[i][j], obj.id, 'selected');   // possibly replace with updateGame()
-    checkFullness();
+    boardUI.updateGame();
 }
 
 function finishRow(row) {
@@ -124,7 +140,7 @@ function finishRow(row) {
         shiftRowDown(k);
     }
     emptyRow(0);
-    updateGame();
+    boardUI.updateGame();
 }
 
 function eraseTopRows() {
@@ -133,7 +149,7 @@ function eraseTopRows() {
             board[i][j] = false;
         }
     }
-    updateGame();
+    boardUI.updateGame();
 }
 
 function isRowFull(row) {
@@ -150,7 +166,47 @@ function checkFullness() {
     }
 }
 
-function nextMove() {
-    shape = shapes.getRandomShape();
-    iterChoice(function(i, j) { boardUI.toggleClass(shape[i][j], formatChoiceId(i, j, 0), 'selected'); });
+function updateChoiceBoard(option) {
+    choices[option] = shapes.getRandomShape();
+    iterChoice(function(i, j) {
+        boardUI.toggleClass(choices[option][i][j], formatChoiceId(i, j, option), 'selected');
+    });
+}
+
+function initGame() {
+    updateChoiceBoard(0);
+    updateChoiceBoard(1);
+}
+
+function updateRound(option) {
+    choices[option] = shapes.getRandomShape();
+    iterChoice(function(i, j) {
+        boardUI.toggleClass(choices[option][i][j], formatChoiceId(i, j, option), 'selected');
+    });
+}
+
+function selectedOption(option) {
+    var colorizeChoice = function(option) {
+        iterChoice(function(i, j) { 
+            boardUI.toggleClass(choices[option][i][j], formatChoiceId(i, j, option), 'active');
+        });
+    };
+
+    activeChoice = option;
+    colorizeChoice(option);
+    boardUI.unlock();
+    lockControls(true);
+}
+
+function confirmRound() {
+    boardUI.updateGame();
+    boardUI.lock();
+    lockControls(false);
+    updateRound(activeChoice);
+    activeChoice = null;
+}
+
+function lockControls(state) {
+    document.getElementById('option0').disabled = state;
+    document.getElementById('option1').disabled = state;
 }
