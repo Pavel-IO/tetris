@@ -39,7 +39,7 @@
                 board[i].push(false);
                 output += '<td class="field" id="' + formatId(i, j) + '" onclick="boardUI.clickField(this)"></td>';
             }
-            output += '<td><button id="finishRow_'+i+'" class="hidden" onclick="finishRow('+i+')">Ok</button></td>'
+            output += '<td><span id="finishRow_'+i+'" class="hidden">&#10004;</span></td>'
             output += '</tr>';
         }
         output += '<tr>';
@@ -51,29 +51,42 @@
         document.write(output);
     }
 
+    function showHelp(key) {
+      help = [
+        'Nápověda: Vyberte tvar A nebo B.',
+        'Nápověda: Zakreslete vybraný tvar (včetně modifikací) na hrací pole a potvrďte tah.',
+      ];
+      document.getElementById('help').innerHTML = help[key];
+    }
+
+
     board = [];
     boardUI = new BoardUI();
     shapes = new Shapes();
+    points = new Points();
     activeChoice = null;
     choices = [
       [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
       [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
     ];
-
-    printChoiceTable(0);
-    printChoiceTable(1);
-    printMainTable();
-
-    initGame();
 </script>
 
-<br><br>
+<table>
+  <tr>
+    <td><script>printMainTable();</script></td>
+    <td>
+      <h3 class="points">Počet bodů: <span id="points">0</span></h3>
+      <script>printChoiceTable(0); printChoiceTable(1);</script>
+    </td>
+  </tr>
+</table>
 <button id="confirmRound" onclick="confirmRound()" disabled="disabled">Potvrdit tah</button>
-<br><br>
-<button onclick="resetGame()">Dokončit kolo</button>
+<p id="help"></p>
+<br>
+<!-- <button onclick="resetGame()">Dokončit kolo</button> -->
 
 <script>
-
+  initGame();
 </script>
 
 <style>
@@ -87,10 +100,13 @@
         background-color: red!important;
     }
     td.field {
-        background-color: gray; width: 50px; height: 50px;
+        background-color: gray; width: 45px; height: 45px;
     }
     .hidden {
         display: none;
+    }
+    .points {
+      text-align: center; margin-bottom: 100px;
     }
     #confirmRound {
       width: 500px;

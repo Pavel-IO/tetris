@@ -86,6 +86,24 @@ function BoardUI() {
     }
 }
 
+function Points() {
+    this.points = 0;
+
+    this.filledRow = function() {
+        this.points++;
+        this.update();
+    }
+
+    this.reachedTop = function() {
+        this.points -= 2;
+        this.update();
+    }
+
+    this.update = function() {
+        document.getElementById('points').innerHTML = this.points;
+    }
+}
+
 function formatId(i, j) {
     return 'field_' + i + '_' + + j;
 }
@@ -125,12 +143,13 @@ function resetGame() {
     boardUI.updateGame();
 }
 
+function emptyRow(row) {
+    for (var j = 0; j < COLS; j++) {
+        board[row][j] = false;
+    }
+};
+
 function finishRow(row) {
-    var emptyRow = function(row) {
-        for (var j = 0; j < COLS; j++) {
-            board[row][j] = false;
-        }
-    };
     var shiftRowDown = function(row) {
         for (var j = 0; j < COLS; j++) {
             board[row][j] = board[row-1][j];
@@ -160,6 +179,14 @@ function isRowFull(row) {
     return isFull;
 }
 
+function isAnyInRow(row) {
+    isAny = false;
+    for (var j = 0; j < COLS; j++) {
+        isAny = isAny || board[row][j];
+    }
+    return isAny;
+}
+
 function checkFullness() {
     for (var i = 0; i < ROWS; i++) {
         boardUI.toggleClass(!isRowFull(i), 'finishRow_' + i, 'hidden');
@@ -176,6 +203,7 @@ function updateChoiceBoard(option) {
 function initGame() {
     updateChoiceBoard(0);
     updateChoiceBoard(1);
+    showHelp(0);
 }
 
 function updateRound(option) {
@@ -196,14 +224,32 @@ function selectedOption(option) {
     colorizeChoice(option);
     boardUI.unlock();
     lockControls(true);
+    showHelp(1);
+}
+
+function evaluatePoints() {
+    for (var i = 0; i < ROWS; i++) {
+        if (isRowFull(i)) {
+            finishRow(i);
+            points.filledRow();
+        }
+    }
+    if (isAnyInRow(0)) {
+        emptyRow(0);
+        emptyRow(1);
+        points.reachedTop();
+    }
+    checkFullness();
 }
 
 function confirmRound() {
+    evaluatePoints();
     boardUI.updateGame();
     boardUI.lock();
     lockControls(false);
     updateRound(activeChoice);
     activeChoice = null;
+    showHelp(0);
 }
 
 function lockControls(state) {
