@@ -4,6 +4,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Nette\Database\Connection;
 use Nette\Utils\Json;
+use Nette\Neon\Neon;
 
 class GameSync {
     private Connection $db;
@@ -36,8 +37,9 @@ class GameSync {
     }
 }
 
+$dbLogin = Neon::decode(file_get_contents('config.local.neon'))['database'];
 $config = [
-    'dbConnection' => new Connection('mysql:host=127.0.0.1;dbname=zazitkovky', '***', '***')
+    'dbConnection' => new Connection($dbLogin['dsn'] . 'dbname=' . $dbLogin['dbname'], $dbLogin['user'], $dbLogin['password'])
 ];
 
 $game = new GameSync($config['dbConnection']);
