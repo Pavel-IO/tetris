@@ -21,6 +21,45 @@ function DataModel() {
     this.init()
 }
 
+function Connection() {
+    this.httpRequest = new XMLHttpRequest()
+    if (!this.httpRequest) {
+        alert('Giving up :( Cannot create an XMLHTTP instance')
+    }
+
+    this.makeRequest = (data) => {
+        this.httpRequest.onreadystatechange = this.processResponse
+        this.httpRequest.open('POST', 'http://localhost/zazitkovky/masakr-bitva/refresh.php', true)
+        this.httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+        this.httpRequest.send(data)
+    }
+
+    this.processResponse = () => {
+        // TODO: mozna by to melo byt cele v try catch
+        if (this.httpRequest.readyState === XMLHttpRequest.DONE) {
+            if (this.httpRequest.status === 200) {
+                let response = JSON.parse(this.httpRequest.responseText)
+                for (let record of response) {
+                    model.setValue(record.x, record.y, record.status)
+                }
+                board.updateGame()
+            } else {
+                console.log('There was a problem with the request.')
+            }
+        }
+    }
+
+    this.saveField = (field, value) => {
+        let payload = {x: field[0], y: field[1], status: value}
+        let str = 'xhrInput=' + encodeURIComponent(JSON.stringify(payload))
+        this.makeRequest(str)
+    }
+
+    this.update = () => {
+        this.makeRequest('')
+    }
+}
+
 function Controls() {
     this.selectPanel = [
         ['c0', 0, document.getElementById('controlPanelC0')],
@@ -36,6 +75,7 @@ function Controls() {
                 if (activeField) {
                     model.setValue(activeField[0], activeField[1], code)
                     board.updateGame()
+                    connection.saveField(activeField, code)
                 }
                 this.removeAllActive()
                 obj.classList.add('active')
@@ -158,5 +198,5 @@ function toggleClass(elmId, condition, className) {
 }
 
 function isString(value) {
-    return typeof value === 'string' || value instanceof String;
+    return typeof value === 'string' || value instanceof String
 }

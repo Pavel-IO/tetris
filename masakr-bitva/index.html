@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <link rel="icon" href="favicon.ico">
   <title>MASAkr bitva</title>
 </head>
 <body>
@@ -34,14 +35,17 @@
   var model = new DataModel()
   var board = new Board()
   var controls = new Controls()
+  var connection = new Connection()
   var activeField = null
 
   document.getElementById('confirmRound').onclick = () => {
-    iterBoard((i, j) => {
+    board.iterBoard((i, j) => {
       model.setValue(i, j, 0)
     })
     board.updateGame()
   }
+
+  connection.update()
 
 </script>
 
