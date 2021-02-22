@@ -45,8 +45,10 @@ $config = [
 $game = new GameSync($config['dbConnection']);
 
 if (isset($_POST['xhrInput'])) {
-    $in = Json::decode($_POST['xhrInput'], Json::FORCE_ARRAY);
-    $result = $game->insertField($in['x'], $in['y'], $in['status']);
+    $list = Json::decode($_POST['xhrInput'], Json::FORCE_ARRAY);
+    foreach ($list as $in) {
+        $result = $game->insertField($in['x'], $in['y'], $in['status']);
+    }
     echo $game->getChanges();
 } else {
     //$game->insertField(3, 4, 2);

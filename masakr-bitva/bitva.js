@@ -1,27 +1,24 @@
-function DataModel() {
-    this.board = []
+function Timer() {
+    this.interval = null
+    this.repeat = 0
 
-    this.getValue = (i, j) => {
-        return this.board[i][j]
-    }
+    this.regularRefresh = () => {
+        this.repeat++
+        console.log('Sync ' + this.repeat + 'x')
+        model.sync()
 
-    this.setValue = (i, j, v) => {
-        this.board[i][j] = v
-    }
-
-    this.init = () => {
-        for (var i = 0; i < ROWS; i++) {
-            this.board.push([])
-            for (var j = 0; j < COLS; j++) {
-              this.board[i].push(0)
-            }
+        if (this.repeat >= 50) {
+            window.clearInterval(this.interval)
+            this.interval = null
         }
     }
 
-    this.init()
+    this.interval = window.setInterval(this.regularRefresh, 30 * 1000)
 }
 
 function Connection() {
+    this.callback = null  // connection asi nebude service, ale bude se instancializovat
+
     this.httpRequest = new XMLHttpRequest()
     if (!this.httpRequest) {
         alert('Giving up :( Cannot create an XMLHTTP instance')
@@ -39,25 +36,62 @@ function Connection() {
         if (this.httpRequest.readyState === XMLHttpRequest.DONE) {
             if (this.httpRequest.status === 200) {
                 let response = JSON.parse(this.httpRequest.responseText)
-                for (let record of response) {
-                    model.setValue(record.x, record.y, record.status)
-                }
-                board.updateGame()
+                this.callback(response)
             } else {
                 console.log('There was a problem with the request.')
             }
         }
     }
 
-    this.saveField = (field, value) => {
-        let payload = {x: field[0], y: field[1], status: value}
-        let str = 'xhrInput=' + encodeURIComponent(JSON.stringify(payload))
+    this.refresh = (srcQueue, callback) => {
+        this.callback = callback
+        let str = 'xhrInput=' + encodeURIComponent(JSON.stringify(srcQueue))
         this.makeRequest(str)
     }
+}
 
-    this.update = () => {
-        this.makeRequest('')
+function DataModel() {
+    this.board = []
+    this.buffer = []
+
+    this.getValue = (i, j) => {
+        return this.board[i][j]
     }
+
+    // grand true ze serveru, upravi a zobrazi lokalni vysledek, dal nic neuklada
+    this.setValueLocal = (i, j, v) => {
+        this.board[i][j] = v
+    }
+
+    // akce uzivatele, zmena se okamzite zobrazi, ale na pozadi se musi zpracovat jeji ulozeni na server
+    this.setValueServer = (i, j, v) => {
+        this.setValueLocal(i, j, v)
+        this.buffer.push({x: i, y: j, status: v})
+        console.log(this.buffer)
+    }
+
+    this.init = () => {
+        for (var i = 0; i < ROWS; i++) {
+            this.board.push([])
+            for (var j = 0; j < COLS; j++) {
+              this.board[i].push(0)
+            }
+        }
+    }
+
+    this.processResponse = (response) => {
+        for (let record of response) {
+            this.setValueLocal(record.x, record.y, record.status)
+        }
+        board.updateGame()
+    }
+
+    this.sync = () => {
+        connection.refresh(this.buffer, this.processResponse)
+        this.buffer = []
+    }
+
+    this.init()
 }
 
 function Controls() {
@@ -73,9 +107,8 @@ function Controls() {
             obj.onclick = () => {
                 this.showCurrentColor(color)
                 if (activeField) {
-                    model.setValue(activeField[0], activeField[1], code)
+                    model.setValueServer(activeField[0], activeField[1], code)
                     board.updateGame()
-                    connection.saveField(activeField, code)
                 }
                 this.removeAllActive()
                 obj.classList.add('active')

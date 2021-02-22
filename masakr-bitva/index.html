@@ -36,16 +36,15 @@
   var board = new Board()
   var controls = new Controls()
   var connection = new Connection()
+  var timer = new Timer()
   var activeField = null
 
   document.getElementById('confirmRound').onclick = () => {
     board.iterBoard((i, j) => {
-      model.setValue(i, j, 0)
+      model.setValueLocal(i, j, 0)
     })
     board.updateGame()
   }
-
-  connection.update()
 
 </script>
 
