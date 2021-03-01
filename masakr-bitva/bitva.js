@@ -17,7 +17,8 @@ function Timer() {
 }
 
 function Connection() {
-    this.callback = null  // connection asi nebude service, ale bude se instancializovat
+    this.callbackSuccess = null  // connection asi nebude service, ale bude se instancializovat
+    this.callbackError = null
 
     this.httpRequest = new XMLHttpRequest()
     if (!this.httpRequest) {
@@ -36,15 +37,17 @@ function Connection() {
         if (this.httpRequest.readyState === XMLHttpRequest.DONE) {
             if (this.httpRequest.status === 200) {
                 let response = JSON.parse(this.httpRequest.responseText)
-                this.callback(response)
+                this.callbackSuccess(response)
             } else {
                 console.log('There was a problem with the request.')
+                this.callbackError()
             }
         }
     }
 
-    this.refresh = (srcQueue, callback) => {
-        this.callback = callback
+    this.refresh = (srcQueue, callbackSuccess, callbackError) => {
+        this.callbackSuccess = callbackSuccess
+        this.callbackError = callbackError
         let str = 'xhrInput=' + encodeURIComponent(JSON.stringify(srcQueue))
         this.makeRequest(str)
     }
@@ -67,7 +70,6 @@ function DataModel() {
     this.setValueServer = (i, j, v) => {
         this.setValueLocal(i, j, v)
         this.buffer.push({x: i, y: j, status: v})
-        console.log(this.buffer)
     }
 
     this.init = () => {
@@ -87,8 +89,14 @@ function DataModel() {
     }
 
     this.sync = () => {
-        connection.refresh(this.buffer, this.processResponse)
+        let localBuffer = this.buffer.map((x) => x)
         this.buffer = []
+        let repeatOnError = () => {
+            for (let value of localBuffer) {
+                model.buffer.push(value)
+            }
+        }
+        connection.refresh(localBuffer, this.processResponse, repeatOnError)
     }
 
     this.init()
