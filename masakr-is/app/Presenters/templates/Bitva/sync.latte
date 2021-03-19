@@ -1,0 +1,72 @@
+{block title}Zadání obsazeného území{/block}
+
+{block content}
+<a n:href="Homepage:">Homepage</a>
+
+<h1>Zadání obsazeného území</h1>
+
+<table>
+  <tr>
+    <td>
+      <p style="display: none">Vybrané pole: <span id="currentField"></span> <span id="currentColor"></span></p>
+      <table>
+        <tr>
+          <td id="controlPanelC0" class="field big c0"></td>
+          <td id="controlPanelC1" class="field big c1"></td>
+          <td id="controlPanelC2" class="field big c2"></td>
+          <td id="controlPanelC3" class="field big c3"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td id="mainTableContainer"></td>
+  </tr>
+</table>
+
+
+<script type="text/javascript" src="{$basePath}/scripts/bitva.js"></script>
+<script>
+  var ROWS = 10
+  var COLS = 10
+
+  var model = new DataModel()
+  var board = new Board()
+  var controls = new Controls()
+  var connection = new Connection()
+  var timer = new Timer()
+  var activeField = null
+  model.sync()
+
+</script>
+
+<style>
+    table.choice {
+        display: inline; margin: 20px;
+    }
+    .field {
+        background-color: gray; width: 45px; height: 45px; border: 3px solid gray; cursor: pointer;
+    }
+    .big {
+        width: 127px; height: 100px;
+    }
+    .c1 {
+      background-color: rgba(134, 219, 7, 0.918); border: 3px solid rgba(134, 219, 7, 0.918);
+    }
+    .c2 {
+      background-color: rgb(16, 185, 252); border: 3px solid rgb(16, 185, 252);
+    }
+    .c3 {
+      background-color: firebrick; border: 3px solid firebrick;
+    }
+    .hidden {
+        display: none;
+    }
+
+    td {
+        border: 2px solid white!important;
+    }
+    td.active {
+        border: 2px solid blue!important;
+    }
+</style>

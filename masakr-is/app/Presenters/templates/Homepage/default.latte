@@ -1,0 +1,133 @@
+{* This is the welcome page, you can delete it *}
+
+{block content}
+<header>
+    <div class="navbar navbar-dark bg-dark box-shadow">
+    <div class="container d-flex justify-content-between">
+        <a href="#" class="navbar-brand d-flex align-items-center">
+        <strong>MASAkr</strong>
+        </a>
+    </div>
+    </div>
+</header>
+
+<main role="main">
+
+    <section class="jumbotron text-center">
+    <div class="container">
+        <!-- <img src="imgs/logo.png">-->
+    </div>
+    </section>
+
+    <section>
+    <div class="container">
+        <h2>Co na akci zažiješ</h2>
+        <ul>
+        <li><a n:href="Bitva:vysledky">Vyhodnocení bitvy</a></li>
+        <li><a n:href="Bitva:sync">Zadání obsazeného území (pro orgy)</a></li>
+        <li><a n:href="Bitva:refresh">Bitva back-end (test pro Pavla)</a></li>
+        <li></li>
+        <li>V týmu vymyslíš minimálně 1 pořádnou hru nebo aktivitu.</li>
+        <li>Vyzkoušíš si užitečné postupy, jak od nepopsaného papíru začít tvořit.</li>
+        <li>Dozvíš se o různých typech her a prvcích, které můžeš použít jako základní stavební kameny pro svůj program.</li>
+        <li>Svoji hru si také uvedeš a dostaneš na ni zpětnou vazbu.</li>
+        <li>Strávíš víkend na příjemné základně spolu s partou podobně naladěných lidí.</li>
+        </ul>
+    </div>
+    </section>
+
+    <section class="jumbotron text-center">
+    <div class="container">
+        <div class="row">
+        <div class="col-md-12">
+            <div class="heading text-md-center text-xs-center">
+            <h2>Základní informace</h2>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+            <div class="col-md-6 text-sm-center service-block"> <span class="dot" style="background-color: rgb(164, 204, 0);"></span>
+                <h3>Kdy?</h3>
+                <p><b>10. 4. 2021</b><br>Je to sobota, takže neděli máš na zotavení :)</p>
+            </div>
+            <div class="col-md-6 text-sm-center service-block"> <span class="dot" style="background-color: rgb(55, 170, 199);"></span>
+                <h3>Kde?</h3>
+                <p><b>Bude brzy doplněno! (<a href="https://mapy.cz/s/muhopageja" target="_blank">mapa</a>).</b></p>
+            </div>
+            <div class="col-md-6 text-sm-center service-block"> <span class="dot" style="background-color: rgb(254, 203, 0);"></span>
+                <h3>Pro koho?</h3>
+                <p><b>Pro hravé dospělé (starší 18 let).</b><br></p>
+            </div>
+            <div class="col-md-6 text-sm-center service-block"> <span class="dot" style="background-color: rgb(144, 70, 255);"></span>
+                <h3>Za kolik?</h3>
+                <p><b>Cca 150 Kč.</b><br>Upřesníme do spuštění přihlašování.</p>
+            </div>
+            </div>
+        </div>
+        <div class="col-md-4" id="about_right"> <img src="imgs/logo.png" class="img-fluid" style="max-width: 300px; margin-top: 30px" /> </div>
+        </div>
+        <!-- /.row -->
+    </div>
+    </section>
+
+    <section>
+    <form action="register.php" method="post">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="heading text-md-center text-xs-center">
+                <h2>Registrace</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12" style="text-align: justify;">
+                <p>Ahoj, jsme moc rádi, že se chceš přihlásit na <i>Jistojistě!</i>. Zatím se můžeš registrovat a jakmile přihlašování spustíme, dáme ti vědět :)</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="exampleName"><b>Jméno a příjmení*</b></label>
+                    <input name="name" type="text" class="form-control" id="exampleName" required>
+                </div>
+
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="exampleInputEmail"><b>Emailová adresa*</b></label>
+                    <input name="mail" type="email" class="form-control" id="exampleInputEmail" required>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                <label for="exampleCokoliv"><b>Poznámka/cokoliv co nám chceš říct</b></label>
+                <textarea name="message" class="form-control" id="exampleCokoliv" rows="3"></textarea>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 text-xs-center action-block"> <input type="submit" class="btn btn-capsul btn-aqua" value="Registrovat se"> </div>
+        </div>
+    </div>
+    </form>
+    </section>
+</main>
+
+<footer>
+    <div class="container bg-dark box-shadow paticka">
+    <div class="row">
+        <div class="col-md-2 col-sm-4">
+        <img src="imgs/sova.png">
+        </div>
+        <div class="col-md-2 col-sm-4">
+        <a href="https://facebook.com/events/s/jistojiste/223380738922382/?ti=as" style="color: #fff;" target="_blank">Fb událost Jistojistě!</a><br>
+        <span style="color: #fff;">jistojiste@instruktori.cz</span><br>
+        </div>
+    </div>
+    </div>
+</footer>

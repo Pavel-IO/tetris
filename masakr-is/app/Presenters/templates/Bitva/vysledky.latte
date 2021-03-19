@@ -1,0 +1,33 @@
+{block title}Vyhodnoceni bitvy{/block}
+
+{block content}
+<a n:href="Homepage:">Homepage</a>
+<script type="text/javascript" src="{$basePath}/scripts/bitva.js"></script>
+
+<h1>Vyhodnoceni bitvy</h1>
+
+<div id="content">
+	<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Tvar</th>
+            <th scope="col">Body za tvar</th>
+            <th scope="col">Zelení</th>
+            <th scope="col">Modří</th>
+            <th scope="col">Červení</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th scope="row">Celkem bodů</th>
+            <td>-</td>
+            <td n:for="$g = 1; $g <= 3; $g++"><b>{$groups[$g]}</b></td>
+        </tr>
+        <tr n:foreach="$shapes as $index => $shape">
+            <th scope="row"><script>writeShape([{implode(', ', $shape->getIndexes())|noescape}])</script></th>
+            <td>{$shape->getPoints()}</td>
+            <td n:for="$g = 1; $g <= 3; $g++">{$table[$index][$g]}x</td>
+        </tr>
+    </tbody>
+    </table>
+</div>
