@@ -86,8 +86,53 @@ function BoardUI() {
     }
 }
 
+function Log() {
+    this.storage = window.localStorage;
+
+    this.init = function() {
+        this.write('reset')
+    }
+
+    this.write = function(record) {
+        record = this.getCurrentTime() + ': ' + record + '\n'
+        let existing = this.storage.getItem('score');
+        if (existing) {
+            record += existing;
+        }
+        this.storage.setItem('score', record);
+    }
+
+    this.getLog = function() {
+        let val = this.storage.getItem('score');
+        return val ? val : ''
+    }
+
+    this.getCurrentTime = function() {
+        let zeroFill = function(val) {
+            return val < 10 ? '0' + val.toString(10) : val.toString(10)
+        }
+        let today = new Date();
+        let date = today.getFullYear() + '-' + zeroFill(today.getMonth() + 1) + '-' + zeroFill(today.getDate());
+        let time = today.getHours() + ':' + zeroFill(today.getMinutes()) + ':' + zeroFill(today.getSeconds());
+        return date + ' ' + time;
+    }
+
+    this.saveScore = function(points, fails) {
+        let record = 'points = ' + points + ', fails = ' + fails;
+        log.write(record)
+        this.updateView()
+    }
+
+    this.updateView = function() {
+        document.getElementById('logView').value = this.getLog()
+    }
+
+    this.init()
+}
+
 function Points() {
     this.points = 0;
+    this.fails = 0;
 
     this.filledRow = function() {
         this.points++;
@@ -96,11 +141,13 @@ function Points() {
 
     this.reachedTop = function() {
         this.points -= 2;
+        this.fails++;
         this.update();
     }
 
     this.update = function() {
         document.getElementById('points').innerHTML = this.points;
+        log.saveScore(this.points, this.fails)
     }
 }
 
@@ -154,7 +201,7 @@ function finishRow(row) {
         for (var j = 0; j < COLS; j++) {
             board[row][j] = board[row-1][j];
         }
-    } 
+    }
     for (k = row; k > 0; k--) {
         shiftRowDown(k);
     }
@@ -204,6 +251,7 @@ function initGame() {
     updateChoiceBoard(0);
     updateChoiceBoard(1);
     showHelp(0);
+    log.updateView()
 }
 
 function updateRound(option) {
@@ -215,7 +263,7 @@ function updateRound(option) {
 
 function selectedOption(option) {
     var colorizeChoice = function(option) {
-        iterChoice(function(i, j) { 
+        iterChoice(function(i, j) {
             boardUI.toggleClass(choices[option][i][j], formatChoiceId(i, j, option), 'active');
         });
     };

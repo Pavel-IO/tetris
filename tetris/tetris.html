@@ -59,17 +59,28 @@
       document.getElementById('help').innerHTML = help[key];
     }
 
+    document.addEventListener('keydown', function(key) {
+        if (key.code == 'KeyF') {  // open
+            document.getElementById('logView').classList.remove('hidden')
+        }
+        if (key.code == 'KeyG') {  // close
+            document.getElementById('logView').classList.add('hidden')
+        }
+    });
 
     board = [];
     boardUI = new BoardUI();
     shapes = new Shapes();
     points = new Points();
+    log = new Log()
     activeChoice = null;
     choices = [
       [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
       [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
     ];
 </script>
+
+<textarea id="logView" class="hidden" readonly="readonly"></textarea>
 
 <table>
   <tr>
@@ -113,6 +124,9 @@
     }
     #option0, #option1 {
       width: 200px;
+    }
+    #logView {
+        width: 600px; height: 200px;
     }
 </style>
 
