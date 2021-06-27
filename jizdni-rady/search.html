@@ -5,9 +5,29 @@
   <title>Jízdní řády</title>
 </head>
 <body>
+
+  <div id="form">
+    Z: <select id="from"><option>--- Vyberte začátek cesty ---</option></select>
+    Do: <select id="to"><option>--- Vyberte cíl cesty ---</option></select>
+    Odjezd: <input type="time">
+    <button id="search">Vyhledat</button>
+  </div>
+
+  <hr>
+  <div id="result">
+
+  </div>
+
   <script type="text/javascript" src="model.js"></script>
   <script type="text/javascript" src="shedule.js"></script>
   <script type="text/javascript" src="search.js"></script>
+
+  <style>
+    .resultCaption { font-size: 120%; color: midnightblue; }
+    .resultRoute { border-top: 1px solid gray; padding: 5px; }
+    .resultTransfer { color: #888; }
+    .transfers { margin-left: 30px; }
+  </style>
 
 </body>
 </html>
