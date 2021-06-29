@@ -76,7 +76,7 @@ class Line {
     let departs = []
     let processDeparts = (source, indexStartLine) => {
       for (let lineDepart of source) {
-        let stationDepart = lineDepart + this.sumTime(0, indexFrom)
+        let stationDepart = lineDepart + this.sumTime(indexStartLine, indexFrom)
         if (stationDepart > time) {
           let totalTime = this.sumTime(indexFrom, indexTo)
           departs.push(new Segment(stationDepart, totalTime))
@@ -221,7 +221,6 @@ class Route {
   }
 
   searchTimes(beginTime) {
-    beginTime = 11 * 60 + 30
     let times = []
     let initSegTime = this.transfers[0].line.findDepartures(this.transfers[0].begin, this.transfers[0].destination, beginTime - 1)
     for (let initSegment of initSegTime) {

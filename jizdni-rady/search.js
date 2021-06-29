@@ -1,6 +1,7 @@
 
 class Printer {
   clear() {
+    // TODO: tady to zavazi, kdyz se vypisuji jen chybove stavy
     document.getElementById('result').innerHTML = '<p><b>Spoje jsou řazeny podle času příjezdu od nejdřívějšího</b></p>'
   }
 
@@ -40,6 +41,38 @@ class Printer {
       this.line(this.route(route))
     }
   }
+
+  lineShedule(line, direction) {
+    // direction: 1 = forward, 0 = backward
+    let out = '<div class="sheduleLine">'
+    out += `<h3>Linka ${line.name} - směr ${direction ? 'tam' : 'zpět'}</h3>`
+    out += '<table class="table table-bordered">'
+
+    let formatStation = (departures, index, f, s) => {
+      let station = line.getStations()[index]
+      out = '<tr>'
+      out += `<th scope="row">${station.name}</th>`
+      for (let ftime of departures) {
+        out += `<td>${intToTime(ftime + line.sumTime(f, s))}</td>`
+      }
+      out += '</tr>'
+      return out
+    }
+
+    if (direction) {
+      for (let stationIndex in line.getStations()) {
+        out += formatStation(line.forward, stationIndex, 0, stationIndex)
+      }
+    } else {
+      let sI = line.getStations().length - 1
+      for (let stationIndex = sI; stationIndex >= 0; stationIndex--) {
+        out += formatStation(line.backward, stationIndex, stationIndex, sI)
+      }
+    }
+    out += '</table>'
+    out += '</div>'
+    return out
+  }
 }
 
 printer = new Printer()
@@ -68,6 +101,10 @@ function search() {
   let from = document.getElementById('from').value
   let to = document.getElementById('to').value
 
+  let hours = parseInt(document.getElementById('time_hours').value)
+  let minutes = parseInt(document.getElementById('time_minutes').value)
+  let beginTime = 60 * hours + minutes
+
   printer.clear()
 
   if (from.startsWith('---') || to.startsWith('---')) {
@@ -78,7 +115,7 @@ function search() {
     geoRoutes = shedule.search(from, to)
     timeRoutes = []
     for (let geoRoute of geoRoutes) {
-      timeRoutes = timeRoutes.concat(geoRoute.searchTimes())
+      timeRoutes = timeRoutes.concat(geoRoute.searchTimes(beginTime))
     }
     sortedTimeRoutes = timeRoutes.sort((a, b) => { return a.arrival() - b.arrival() })
     printer.routes(sortedTimeRoutes)
@@ -86,3 +123,10 @@ function search() {
 }
 
 document.getElementById('search').onclick = search
+
+let jizdniRad = ''
+for (let line of lines) {
+  jizdniRad += printer.lineShedule(line, 1)
+  jizdniRad += printer.lineShedule(line, 0)
+}
+document.getElementById('shedule').innerHTML = jizdniRad

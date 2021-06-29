@@ -9,7 +9,21 @@
   <div id="form">
     Z: <select id="from"><option>--- Vyberte začátek cesty ---</option></select>
     Do: <select id="to"><option>--- Vyberte cíl cesty ---</option></select>
-    Odjezd: <input type="time">
+    Odjezd:
+    <select id="time_hours">
+      <script>
+        for (let k = 0; k < 24; k++) {
+          document.write('<option>' + k + '</option>');
+        }
+      </script>
+    </select> :
+    <select id="time_minutes">
+        <script>
+          for (let k = 0; k < 60; k++) {
+            document.write('<option>' + k.toString().padStart(2, '0') + '</option>');
+          }
+        </script>
+      </select>
     <button id="search">Vyhledat</button>
   </div>
 
@@ -18,15 +32,22 @@
 
   </div>
 
+  <div id="shedule">
+
+  </div>
+
   <script type="text/javascript" src="model.js"></script>
   <script type="text/javascript" src="shedule.js"></script>
   <script type="text/javascript" src="search.js"></script>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
     .resultCaption { font-size: 120%; color: midnightblue; }
     .resultRoute { border-top: 1px solid gray; padding: 5px; }
     .resultTransfer { color: #888; }
     .transfers { margin-left: 30px; }
+    .sheduleLine { margin: 10px; }
   </style>
 
 </body>
