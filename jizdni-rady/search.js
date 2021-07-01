@@ -91,6 +91,7 @@ for (let line of lines) {
     allStations.push(stop.name)
   }
 }
+allStations = [...new Set(allStations)]
 allStations.sort()
 for (let station of allStations) {
   addIntoSelect('from', station)

@@ -27,7 +27,7 @@ class Line {
 
   setDistances(distances) {
     if (this.stations.length - 1 != distances.length) {
-      alert('Vzdalenosti neodpovídají počtu stanic.')
+      alert(`Vzdalenosti ${distances.length} neodpovídají počtu stanic ${this.stations.length}.`)
     }
     this.distances = distances
   }
@@ -55,10 +55,12 @@ class Line {
     if (index < 0) {
       alert(`Station ${name} was not found in ${this.stations}.`)
     }
-    return index
+    return parseInt(index)
   }
 
   sumTime(indexFrom, indexTo) {
+    indexFrom = parseInt(indexFrom)
+    indexTo = parseInt(indexTo)
     let cum = 0
     if (indexFrom > indexTo) {
       [indexFrom, indexTo] = [indexTo, indexFrom]
@@ -150,7 +152,6 @@ class Route {
   constructor(line, station) {
     this.stations = [station]
     this.transfers = [new DirectLine(line, station)]
-    this.totalTime = 0  // neni clonovano, zalezi na case, zatim nedoreseno
   }
 
   containStation(station) {
