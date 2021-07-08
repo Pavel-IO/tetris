@@ -48,6 +48,11 @@ function BoardUI() {
         document.getElementById('confirmRound').disabled = true;
     }
 
+    this.hasClass = function(id, name) {
+      var element = document.getElementById(id);
+      return element.classList.contains(name)
+    }
+
     this.addClass = function(id, name) {
         var element = document.getElementById(id);
         var arr = element.className.split(' ');
@@ -80,6 +85,9 @@ function BoardUI() {
         }
         var i = getI(obj.id);
         var j = getJ(obj.id);
+        if (board[i][j] && !this.hasClass(obj.id, 'active')) {
+            return ;
+        }
         board[i][j] = !board[i][j];
         boardUI.toggleClass(board[i][j], obj.id, 'active');   // possibly replace with updateGame()
         checkFullness();
@@ -140,7 +148,7 @@ function Points() {
     }
 
     this.reachedTop = function() {
-        this.points -= 2;
+        this.points -= SUBTRACT_POINTS;
         this.fails++;
         this.update();
     }
@@ -211,9 +219,7 @@ function finishRow(row) {
 
 function eraseTopRows() {
     for (var i = 0; i < ERASED_ROWS; i++) {
-        for (var j = 0; j < COLS; j++) {
-            board[i][j] = false;
-        }
+        emptyRow(i);
     }
     boardUI.updateGame();
 }
@@ -283,8 +289,7 @@ function evaluatePoints() {
         }
     }
     if (isAnyInRow(0)) {
-        emptyRow(0);
-        emptyRow(1);
+        eraseTopRows()
         points.reachedTop();
     }
     checkFullness();
